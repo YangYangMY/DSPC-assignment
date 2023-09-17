@@ -21,16 +21,18 @@ def ProcessImage(use_gpu):
     # Clean the output directory before processing
     clean_output_directory(output_dir)
 
-    session = new_session()
-
     gpu_execution_time = 0.0  # Initialize GPU execution time
     cpu_execution_time = 0.0  # Initialize CPU execution time
 
     if use_gpu and torch.cuda.is_available():
         print("Using GPU")
         torch.cuda.synchronize()  # Ensure that previous GPU operations are finished
+        # Set the CUDA execution provider explicitly
+        session = new_session(execution_providers=['CUDAExecutionProvider'])
     else:
         print("Using CPU")
+        # Set the CUDA execution provider explicitly
+        session = new_session(execution_providers=['CPUExecutionProvider'])
 
     for input_file in input_files:
         try:

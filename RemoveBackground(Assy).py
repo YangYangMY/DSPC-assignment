@@ -28,8 +28,6 @@ def ProcessImage():
     # Clean the output directory before processing
     clean_output_directory(output_dir)
 
-    session = new_session()
-
     start_time = time.time()  # Record start time
 
     for input_file in input_files:
