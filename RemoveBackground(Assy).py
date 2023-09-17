@@ -28,6 +28,9 @@ def ProcessImage():
     # Clean the output directory before processing
     clean_output_directory(output_dir)
 
+    # Set the CPU execution provider explicitly
+    session = new_session(execution_providers=['CPUExecutionProvider'])
+
     start_time = time.time()  # Record start time
 
     for input_file in input_files:
