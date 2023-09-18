@@ -28,9 +28,6 @@ def ProcessImage():
     # Clean the output directory before processing
     clean_output_directory(output_dir)
 
-    # Set the CPU execution provider explicitly
-    session = new_session(execution_providers=['CPUExecutionProvider'])
-
     start_time = time.time()  # Record start time
 
     for input_file in input_files:
@@ -41,7 +38,7 @@ def ProcessImage():
             with open(input_path, 'rb') as i:
                 input_data = i.read()
 
-                output_data = remove(input_data, session=session)
+                output_data = remove(input_data)
                 output_image = Image.open(io.BytesIO(output_data))  # Convert bytes to PIL Image
                 print('saved : ', output_path)
                 output_image.save(output_path)
@@ -51,7 +48,7 @@ def ProcessImage():
 
     end_time = time.time()  # Record end time
     execution_time = end_time - start_time
-    print(f"Execution time: {execution_time:.2f} seconds")
+    print(f"CPU Execution time: {execution_time:.2f} seconds")
 
 
 def main():
