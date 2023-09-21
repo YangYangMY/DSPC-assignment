@@ -18,8 +18,8 @@ def clean_output_directory(output_dir):
         if file_name.endswith('.png'):
             file_path = os.path.join(output_dir, file_name)
             os.remove(file_path)
-    print(f"Cleared Output Directory")
-    print(f"=====================================")
+    print("Cleared Output Directory")
+    print("=====================================")
 
 
 def process_image(input_file, output_dir, session, input_files):
@@ -40,7 +40,7 @@ def process_image(input_file, output_dir, session, input_files):
             output_image.save(output_path)
 
         # Print the results
-        print(f"Processed {input_file}")
+        #print(f"Processed {input_file}")
 
     except Exception as e:
         print(f"Error processing {input_file}: {e}")
@@ -59,6 +59,7 @@ def process_images_on_gpu(input_files, output_dir, thread_num):
     # Process each input image on the GPU in parallel
     num_images = len(input_files)
     print(f"{num_images} images detected")
+    print("Processing images...")
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=thread_num) as executor:
         futures = []
@@ -71,18 +72,19 @@ def process_images_on_gpu(input_files, output_dir, thread_num):
 
     end_time = time.time()  # Record end time
     execution_time = end_time - start_time
+    print("=====================================")
     print(f"GPU Execution time: {execution_time:.2f} seconds")
 
 
 def main():
-    input_dir = Path('tests/fixtures')
+    input_dir = Path('100KB')
     input_files = list(input_dir.glob('*.jpg'))
     output_dir = input_dir / 'output'
 
     # Sort the input files
     input_files.sort()
 
-    process_images_on_gpu(input_files, output_dir, thread_num=6)
+    process_images_on_gpu(input_files, output_dir, thread_num=16)
 
 
 if __name__ == "__main__":
