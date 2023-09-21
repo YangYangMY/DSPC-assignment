@@ -6,12 +6,18 @@ import io
 import time
 import os
 
+if torch.cuda.is_available():
+    print("Using GPU")
+else:
+    print("Using CPU")
+
 def clean_output_directory(output_dir):
     for file_name in os.listdir(output_dir):
         if file_name.endswith('.png'):
             file_path = os.path.join(output_dir, file_name)
             os.remove(file_path)
-            print(f"Deleted {file_path}")
+    print(f"Cleared Output Directory")
+    print(f"=====================================")
 
 def ProcessImage(use_gpu):
     input_dir = Path('under 100KB')
@@ -24,12 +30,17 @@ def ProcessImage(use_gpu):
     gpu_execution_time = 0.0  # Initialize GPU execution time
 
     if use_gpu and torch.cuda.is_available():
-        print("Using GPU")
         torch.cuda.synchronize()  # Ensure that previous GPU operations are finished
 
         # Create a new session for GPU processing
         providers = ['CUDAExecutionProvider']
         session = new_session(providers=providers)
+
+    # Process each input image on the GPU in parallel
+    num_images = len(input_files)
+    print(f"{num_images} images detected")
+    print("Processing images...")
+
 
     for input_file in input_files:
         try:
@@ -43,7 +54,7 @@ def ProcessImage(use_gpu):
                     gpu_start_time = time.time()  # Record GPU start time
                     output_data = remove(input_data, session=session)
                     output_image = Image.open(io.BytesIO(output_data))  # Convert bytes to PIL Image
-                    print('saved : ', output_path)
+                    #print('saved : ', output_path)
                     output_image.save(output_path)
                     torch.cuda.synchronize()  # Ensure that all GPU operations are finished
                     gpu_end_time = time.time()  # Record GPU end time
@@ -53,6 +64,7 @@ def ProcessImage(use_gpu):
             print(f"Error processing {input_file}: {e}")
 
     if use_gpu and torch.cuda.is_available():
+        print("=====================================")
         print(f"GPU Execution time: {gpu_execution_time:.2f} seconds")
 
 def main():
